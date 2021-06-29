@@ -5,6 +5,7 @@ import Order from "./Order"
 import MenuAdmin from './MenuAdmin'
 import sampleBurgers from '../sample-burgers'
 import Burger from '../components/Burger'
+import base from '../base'
 
 
 
@@ -13,6 +14,24 @@ class App extends React.Component {
         burgers: {},
         order: {},
     }
+componentDidMount(){
+    const {params} = this.props.match
+    this.ref = base.syncState(`${params.restaurantId}/burgers`, {
+        context: this,
+        state: 'burgers'
+
+    })
+}
+componentDidUpdate (){
+    const {params} = this.props.match
+    localStorage.setItem(params.restaurantId, JSON.stringify(this.state.order))
+}
+
+
+componentWillUnmount() {
+    base.removeBinding(this.ref)
+}
+
     addBurger = burger => {
         console.log('addBurger', burger)
         // копия state
